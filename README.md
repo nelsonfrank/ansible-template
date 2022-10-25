@@ -7,7 +7,7 @@
   - Setting up the Git repository
 
 - Installation
-
+- Running elevated ad-hoc Commands
 ## Prerequisite
 
 ### OpenSSH Overview and Setup
@@ -167,3 +167,63 @@ ansible all -m gather_facts --limit <IP-address>
 
 <IP-address> - example 172.16.xxx.xx
 ``` 
+
+## Running elevated ad-hoc Commands
+Try to run apt moule to all server
+
+```bash
+ansible all -m apt -a update_cache=true
+
+#-a - arguments 
+
+# The above command is equivalent to 
+apt update
+
+# NOTE:
+# - This will result to permission denied error 
+```
+
+```bash
+# Solution
+ansible all -m apt -a update_cache=true --became --ask-become-pass
+
+# --become - elevate the privilege to sudo
+# --ask-become-pass - this will ask for sudo password
+
+# this command wil ask for sudo password 
+# then run command to all hosts
+
+# NOTE 
+- Make sure all your host has same sudo password for this to work
+
+# read more about apt module  in ansible docs:
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_module.html
+```
+
+### Install package to all hosts
+
+```bash
+# Install vim-nox package
+ansible all -m apt -a name=vim-nox --become --ask-become-pass
+
+# this command wil ask for sudo password 
+# then install package to all hosts
+```
+
+### Update package for all hosts
+
+```bash
+# Update vim-nox package
+ansible all -m apt -a "name=vim-nox state=latest" --become --ask-become-pass
+
+#NOTE
+# In order to add multiple arguments after -a use "" to add multiple agruments
+```
+
+### Update all packages with available update for all hosts
+
+```bash
+# Update all packages with updates from all hosts/servers
+ansible all -m apt -a "upgrade=dist" --become --ask-become-pass
+
+```
