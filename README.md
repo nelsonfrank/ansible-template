@@ -6,6 +6,8 @@
   - OpenSSH Overview and Setup
   - Setting up the Git repository
 
+- Installation
+
 ## Prerequisite
 
 ### OpenSSH Overview and Setup
@@ -93,7 +95,26 @@ ssha path/to/private/ssh-key
 
 ### Setting up the Git repository
 
-- Add your default private key to your github.
+- Add your default server private key to your github.
     - Create new ssh to github account under ```Account settings``` > ```SSH and GPG keys``` > ```New SSH key```
 
 - This will help your server to pull and push changes from your github account.
+
+
+## Installation
+
+```bash
+
+# Ubuntu installation
+sudo apt update
+sudo apt install software-properties-common
+sudo add-apt-repository --yes --update ppa:ansible/ansible
+sudo apt install ansible
+
+# Or Using pip install
+# https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
+
+# Other OS Platform
+# Check it here:
+# https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html
+```
