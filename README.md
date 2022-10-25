@@ -8,6 +8,7 @@
 
 - Installation
 - Running elevated ad-hoc Commands
+- Introduction to Playbook
 ## Prerequisite
 
 ### OpenSSH Overview and Setup
@@ -225,5 +226,13 @@ ansible all -m apt -a "name=vim-nox state=latest" --become --ask-become-pass
 ```bash
 # Update all packages with updates from all hosts/servers
 ansible all -m apt -a "upgrade=dist" --become --ask-become-pass
+```
 
+## Introduction to Playbook
+
+Check ```install_apache.yml``` file
+
+### Run playbook
+```bash
+ansible-playbook --ask-ecome-pass install_apache.yml
 ```
