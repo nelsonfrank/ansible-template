@@ -4,6 +4,7 @@
 
 - Prerequisite
   - OpenSSH Overview and Setup
+  - Setting up the Git repository
 
 ## Prerequisite
 
@@ -89,3 +90,10 @@ alias ssha='eval $(ssh-agent) && ssh-add'
 
 ssha path/to/private/ssh-key
 ```
+
+### Setting up the Git repository
+
+- Add your default private key to your github.
+    - Create new ssh to github account under ```Account settings``` > ```SSH and GPG keys``` > ```New SSH key```
+
+- This will help your server to pull and push changes from your github account.
