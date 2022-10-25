@@ -230,7 +230,7 @@ ansible all -m apt -a "upgrade=dist" --become --ask-become-pass
 
 ## Introduction to Playbook
 
-Check ```install_apache.yml``` file
+Check [```install_apache.yml```](install_apache.yml) file
 
 ### Run playbook
 ```bash
