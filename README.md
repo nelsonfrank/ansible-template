@@ -101,8 +101,9 @@ ssha path/to/private/ssh-key
 - This will help your server to pull and push changes from your github account.
 
 
-## Installation
+## Installation and setup Ansible
 
+### Install Ansible
 ```bash
 
 # Ubuntu installation
@@ -118,3 +119,51 @@ sudo apt install ansible
 # Check it here:
 # https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html
 ```
+
+### Create inventory file 
+- Create inventory file and add all your host IP addresses or domains
+
+
+### Connect Ansible to hosts
+- Run the following command to connect ansible with hosts 
+
+```bash
+ansible all --key-file /.ssh/ansible-private-key -i inventory -m ping
+
+# all - all hosts
+# --key-file - private ssh key with access to hosts
+# -i - inventory
+# -m - modules (all you to run module)
+```
+
+or Instead create ```ansible.cfg``` file inside your repo to take ansible arguments and attributes
+```text
+# ansible.cfg file
+[defaults]
+inventory = inventory
+private_key_file = ~/.ssh/ansible-private-key
+```
+and this will make your above ansible command look like 
+
+```bash
+ansible all -m ping
+```
+
+### Usefull ansible command
+
+```bash
+# lists of all hosts
+ansible all --list-hosts
+```
+
+```bash
+# get hosts informations
+ansible all -m gather_facts
+``` 
+
+```bash
+# get informations for specific host
+ansible all -m gather_facts --limit <IP-address>
+
+<IP-address> - example 172.16.xxx.xx
+``` 
