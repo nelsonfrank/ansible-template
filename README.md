@@ -12,6 +12,7 @@
 - The 'when' Conditional
 - Improving your Playbook
 - Targeting Specific Nodes
+- Tags
 ## Prerequisite
 
 ### OpenSSH Overview and Setup
@@ -460,3 +461,80 @@ create new playbook file named `site.yml`
 ```
 
 > `pre-tasks` - run before other tasks
+
+
+## Tags
+- Target a specific playbook you want to test instead of run all
+
+
+```yml
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+      
+   - name: update repository index for CentOS
+     tags: always
+     dnf:
+       update_only: yes
+       update_cache: yes
+     when: ansible_distribution == "CentOS"
+
+   - name: update repository index for debian based distribution
+     tags: always
+     apt:
+       update_only: yes
+       update_cache: yes
+     when: ansible_distribution == "Ubuntu"
+
+- hosts: web_servers
+  become: true
+  tasks:
+
+   - name: install apache2 and php packages  for debian based distribution
+     tags: apache,apache2,ubuntu
+     apt:
+        name: 
+          - apache2
+          - libapache2-mod-php
+        state: latest
+        update_cache: yes
+     when: ansible_distribution == ["Ubuntu", "Debian"]
+        
+   - name: install apache and php packages for CentOS
+     tags: apache,centos,httpd 
+     dnf:
+        name: 
+          - httpd
+          - php
+        state: latest
+        update_cache: yes
+     when: ansible_distribution == "CentOS"
+
+- hosts: db_servers
+  become: true
+  tasks:
+      .....
+
+- hosts: file_servers
+  become: true
+  tasks:
+```
+
+Review the list of tags from comand-line
+
+```bash
+ansible-playbook --list-tags site.yml
+```
+
+Target a specific tag in your playbook, for example centos
+
+```bash
+ansible-playbook --tags centos --ask-become-pass site.yml
+
+# multiple tags
+ansible-playbook --tags "centos, apache" --ask-become-pass site.yml
+```
+
+NB; `always` tag run everytime ansible run play even by specify other tags
