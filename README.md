@@ -10,7 +10,7 @@
 - Running elevated ad-hoc Commands
 - Introduction to Playbook
 - The 'when' Conditional
-
+- Improving your Playbook
 ## Prerequisite
 
 ### OpenSSH Overview and Setup
@@ -316,3 +316,31 @@ Assume we have 3 ubuntu server and 1 CentOs
 
 > Read more about Condition [here](https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html#id2)
 
+
+## Improving your Playbook
+
+Refactor the above ansible playbook
+```yml
+---
+
+- hosts: all
+  become: true
+  tasks:
+   - name: install apache2 and php packages  for debian based distribution
+     apt:
+        name: 
+          - apache2
+          - libapache2-mod-php
+        state: latest
+        update_cache: yes
+     when: ansible_distribution == ["Ubuntu", "Debian"]
+        
+   - name: install apache and php packages for CentOS
+     apt:
+        name: 
+          - httpd
+          - php
+        state: latest
+        update_cache: yes
+     when: ansible_distribution == "CentOS"
+```
