@@ -9,6 +9,8 @@
 - Installation
 - Running elevated ad-hoc Commands
 - Introduction to Playbook
+- The 'when' Conditional
+
 ## Prerequisite
 
 ### OpenSSH Overview and Setup
@@ -236,3 +238,81 @@ Check [```install_apache.yml```](install_apache.yml) file
 ```bash
 ansible-playbook --ask-ecome-pass install_apache.yml
 ```
+
+## The 'when' Conditional
+
+This ansible playbook will work only if all hosts are debian based linux.
+
+```yml
+---
+
+- hosts: all
+  become: true
+  tasks:
+    
+   - name: update repository index
+     apt:
+       update_cache: yes
+        
+   - name: install apache2 package
+     apt:
+        name: apache2
+        state: latest
+   
+   - name: add php support for apache2
+     apt:
+        name: libapache2-mod-php
+        state: latest
+```
+
+What if you add other distribution such as arch, fedora etc they don't have apt command.
+
+Solution
+Assume we have 3 ubuntu server and 1 CentOs 
+
+```yml
+---
+
+- hosts: all
+  become: true
+  tasks:
+    
+   - name: update repository index for debian based distribution
+     apt:
+       update_cache: yes
+     when: ansible_distribution == "Ubuntu"
+        
+   - name: install apache2 package for debian based distribution
+     apt:
+        name: apache2
+        state: latest
+     when: ansible_distribution == ["Ubuntu", "Debian"]
+   
+   - name: add php support for apache2 for debian based distribution
+     apt:
+        name: libapache2-mod-php
+        state: latest
+     when: ansible_distribution == "Ubuntu"
+
+       
+   - name: update repository index for CentOS
+     dnf:
+       update_cache: yes
+     when: ansible_distribution == "CentOS"
+        
+   - name: install apache2 package for CentOS
+     apt:
+        name: httpd
+        state: latest
+     when: ansible_distribution == "CentOS"
+   
+   - name: add php support for apache2 for CentOS
+     apt:
+        name: php
+        state: latest
+     when: ansible_distribution == "CentOS"
+
+```
+
+> Read more about Condition [here](https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html#id2)
+
