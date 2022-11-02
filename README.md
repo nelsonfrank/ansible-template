@@ -344,3 +344,38 @@ Refactor the above ansible playbook
         update_cache: yes
      when: ansible_distribution == "CentOS"
 ```
+
+Further refactor to one play for all distribution
+```yml
+---
+
+- hosts: all
+  become: true
+  tasks:
+   - name: install apache and php packages
+     package:
+        name: 
+          - "{{apache_package}}"
+          - "{{php_package}}"
+        state: latest
+        update_cache: yes
+```
+
+Then, Update inventory file by adding variable name
+
+```
+172.16.250.123 apache_package=apache2 php_packag=libapache2-mod-php
+172.16.250.124 apache_package=apache2 php_packag=libapache2-mod-php
+172.16.250.125 apache_package=apache2 php_packag=libapache2-mod-php
+172.16.250.128 apache_package=httpd php_packag=php
+```
+
+> This will work the same as the above playbook
+
+## NB:
+
+The package name is "package" and not apt or dnf, This is because package is Generic OS package manager.
+
+- php_package and apache_package are variables which are populated everytime ansible command run
+
+Read more about ansible generic package manager [here](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/package_module.html)
