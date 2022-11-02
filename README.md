@@ -336,7 +336,7 @@ Refactor the above ansible playbook
      when: ansible_distribution == ["Ubuntu", "Debian"]
         
    - name: install apache and php packages for CentOS
-     apt:
+     dnf:
         name: 
           - httpd
           - php
