@@ -11,6 +11,7 @@
 - Introduction to Playbook
 - The 'when' Conditional
 - Improving your Playbook
+- Targeting Specific Nodes
 ## Prerequisite
 
 ### OpenSSH Overview and Setup
@@ -376,6 +377,86 @@ Then, Update inventory file by adding variable name
 
 The package name is "package" and not apt or dnf, This is because package is Generic OS package manager.
 
+Read more about ansible generic package manager [here](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/package_module.html)
+
+
 - php_package and apache_package are variables which are populated everytime ansible command run
 
-Read more about ansible generic package manager [here](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/package_module.html)
+
+
+## Targeting Specific Nodes
+- Individualize our host by perform specific action on only specific hosts for example only one server is web server so we need to install apache in only web server host and not the rest.
+
+- Group host into different categories
+
+```
+[web_servers]
+172.16.250.123
+172.16.250.124
+172.16.250.127
+
+[db_servers]
+172.16.250.125
+172.16.250.126
+
+[file_servers]
+172.16.250.128
+```
+
+
+create new playbook file named `site.yml`
+
+```yml
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+      
+   - name: update repository index for CentOS
+     dnf:
+       update_only: yes
+       update_cache: yes
+     when: ansible_distribution == "CentOS"
+
+   - name: update repository index for debian based distribution
+     apt:
+       update_only: yes
+       update_cache: yes
+     when: ansible_distribution == "Ubuntu"
+
+- hosts: web_servers
+  become: true
+  tasks:
+
+   - name: install apache2 and php packages  for debian based distribution
+     apt:
+        name: 
+          - apache2
+          - libapache2-mod-php
+        state: latest
+        update_cache: yes
+     when: ansible_distribution == ["Ubuntu", "Debian"]
+        
+   - name: install apache and php packages for CentOS
+     dnf:
+        name: 
+          - httpd
+          - php
+        state: latest
+        update_cache: yes
+     when: ansible_distribution == "CentOS"
+
+- hosts: db_servers
+  become: true
+  tasks:
+      .....
+
+- hosts: file_servers
+  become: true
+  tasks:
+       .....
+
+```
+
+> `pre-tasks` - run before other tasks
